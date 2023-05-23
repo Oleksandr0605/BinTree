@@ -7,7 +7,10 @@ from abstractcollection import AbstractCollection
 from bstnode import BSTNode
 from linkedstack import LinkedStack
 from linkedqueue import LinkedQueue
+from random import shuffle
 from math import log
+import time
+
 
 
 class LinkedBST(AbstractCollection):
@@ -374,21 +377,61 @@ class LinkedBST(AbstractCollection):
         :return:
         :rtype:
         """
-        pass
+        words = read_file('words(1).txt')
+        random_words = words
+        shuffle(random_words)
+        create_tree(self, words)
+
+        start_time = time.time()
+        for _ in range(10000):
+            elm = random_words[_]
+            for word in words:
+                if elm == word:
+                    break
+        end_time = time.time()
+        print("Time taken for list searching:", end_time - start_time)
+
+        start_time = time.time()
+        for _ in range(10000):
+            self.find(random_words[_])
+        end_time = time.time()
+        print("Time taken for searching in alphabet tree:", end_time - start_time)
+
+        self.clear()
+        create_tree(self, random_words)
+
+        start_time = time.time()
+        for _ in range(10000):
+            self.find(words[_])
+        end_time = time.time()
+        print("Time taken for searching in random tree:", end_time - start_time)
+
+        self.clear()
+        create_tree(self, words)
+        self.rebalance()
+
+        start_time = time.time()
+        for _ in range(10000):
+            self.find(random_words[_])
+        end_time = time.time()
+        print("Time taken for searching in rebalabced tree:", end_time - start_time)
+
+
+def read_file(path):
+    """
+    read file
+    """
+    with open(path, 'r', encoding="utf-8") as file:
+        return file.read().split('\n')
+
+def create_tree(tree, words):
+    """
+    create tree
+    """
+    for word in words:
+        tree.add(word)
 
 if __name__ == '__main__':
-    tree = LinkedBST()
-    tree.add(5)
-    tree.add(3)
-    tree.add(7)
-    tree.add(2)
-    tree.add(4)
-    tree.add(6)
-    tree.add(8)
-    tree.add(1)
-    tree.add(9)
-    tree.add(10)
-    tree.add(11)
-    tree.add(12)
-    tree.rebalance()
-    print(tree)
+    bst = LinkedBST()
+    bst.demo_bst('words(1).txt')
+    
